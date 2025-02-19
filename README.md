@@ -1,6 +1,6 @@
 # MLflow + Kubernetes Pipeline
 
-This repository contains the necessary files to deploy an MLflow-based training and inference pipeline on Kubernetes.
+This repository contains all the necessary files to deploy an MLflow-based training and inference pipeline on Kubernetes.
 
 ## **🔹 Installation Steps**
 
@@ -15,21 +15,19 @@ This repository contains the necessary files to deploy an MLflow-based training 
    chmod +x install.sh
    ./install.sh
    ```
+   This will **check and install missing dependencies**, including:
+   - Python, Docker, Kubernetes (kubectl), Helm, PostgreSQL
+   - Minikube (for local Kubernetes cluster)
+   - Local Docker Registry (`localhost:5000`)
+   - MLflow, Apache Airflow, and Evidently AI
 
-### **📌 Windows Installation (CMD)**
-1. **Extract the ZIP file** and navigate to the project folder.
-2. **Run the install script** in **Command Prompt** (Run as Administrator):
-   ```cmd
-   install.bat
-   ```
-
-This will install:
-- Python (latest stable version)
-- MLflow, Apache Airflow, and Evidently AI
-- Docker, Kubernetes CLI (kubectl), Helm, PostgreSQL
-- Minikube (for local Kubernetes cluster)
-- Local Docker Registry (`localhost:5000`)
-- KServe for ML model deployment
+3. **Activate the Virtual Environment (if needed)**  
+   - The install script does not create a virtual environment by default.  
+   - If you want to use a virtual environment while still accessing system-wide packages, create one:  
+     ```bash
+     python3 -m venv venv --system-site-packages
+     source venv/bin/activate
+     ```
 
 ---
 
