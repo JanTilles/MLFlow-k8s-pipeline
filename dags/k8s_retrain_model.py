@@ -17,7 +17,7 @@ dag = DAG(
 
 train_task = KubernetesPodOperator(
     namespace="airflow",
-    image="your-dockerhub-username/retrain-image:v1",
+    image="localhost:5000/retrain-image:v1",
     cmds=["python", "/app/retrain.py"],
     name="retrain-task",
     task_id="train_model_in_k8s",

@@ -4,7 +4,7 @@ metadata:
   name: iris-classifier
 spec:
   predictor:
-    model:
-      modelFormat:
-        name: sklearn
-      storageUri: "s3://your-mlflow-bucket/models/IrisClassifier/latest"
+    containers:
+      - name: iris-model
+        image: localhost:5000/iris-model:v1
+        imagePullPolicy: Always
