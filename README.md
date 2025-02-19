@@ -3,7 +3,13 @@
 This repository contains the necessary files to deploy an MLflow-based training and inference pipeline on Kubernetes.
 
 ## Installation
-Run the `install.sh` script to set up the environment on Ubuntu 22.04 (WSL):
+### On Ubuntu (WSL)
+Run the `install.sh` script to set up the environment:
 ```bash
 chmod +x install.sh && ./install.sh
+```
+### On Windows
+Run the `install.bat` script in Command Prompt:
+```cmd
+install.bat
 ```
