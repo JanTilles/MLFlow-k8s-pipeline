@@ -1,0 +1,10 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: iris-classifier
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: sklearn
+      storageUri: "s3://your-mlflow-bucket/models/IrisClassifier/latest"
