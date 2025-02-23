@@ -17,7 +17,7 @@ This repository contains all the necessary files to deploy an MLflow-based train
    ```
    This will **check and install missing dependencies**, including:
    - Python, Docker, Kubernetes (kubectl), Helm, PostgreSQL
-   - Minikube (for local Kubernetes cluster)
+   - Kind (for local Kubernetes cluster)
    - Local Docker Registry (`localhost:5000`)
    - MLflow, Apache Airflow, and Evidently AI
 
