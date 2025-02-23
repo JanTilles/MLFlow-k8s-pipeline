@@ -40,14 +40,12 @@ if ! sudo systemctl is-active --quiet docker; then
     sudo dockerd --iptables=false --storage-driver=overlay2 &
 fi
 
-# Check if Minikube is installed
-if command -v minikube &> /dev/null; then
-    echo "Minikube is already installed."
-else
-    echo "Installing Minikube..."
-    curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    chmod +x minikube
-    sudo mv minikube /usr/local/bin/
+# Install Kind if not found
+if ! command -v kind &> /dev/null; then
+    echo "Installing Kind..."
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+    chmod +x ./kind
+    sudo mv ./kind /usr/local/bin/kind
 fi
 
 # Install kubectl manually if not found
@@ -70,8 +68,33 @@ for package in "mlflow" "apache-airflow" "evidently"; do
     fi
 done
 
-echo "Starting Minikube..."
-minikube start --driver=docker
+# Create a Kind configuration file
+cat <<EOF > kind-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  disableDefaultCNI: true
+  podSubnet: "10.244.0.0/16"
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+  - containerPort: 443
+    hostPort: 443
+  - containerPort: 5000
+    hostPort: 5000
+EOF
+
+echo "Creating Kind cluster with custom configuration..."
+kind create cluster --config kind-config.yaml
+
+# Wait for Kind cluster to be fully ready
+echo "Waiting for Kind cluster to be ready..."
+until kubectl get nodes &> /dev/null; do
+    echo "Kind cluster is not ready yet. Retrying in 5 seconds..."
+    sleep 5
+done
 
 # Check if Docker registry is running
 if docker ps | grep -q "registry"; then
@@ -102,5 +125,16 @@ else
     sudo systemctl start postgresql
     sudo systemctl enable postgresql
 fi
+
+# Set up Nginx
+echo "Setting up Nginx..."
+kubectl create deployment nginx --image=nginx
+
+# Expose Nginx deployment as a service
+kubectl expose deployment nginx --port=80 --type=NodePort
+
+# Verify Nginx installation
+echo "Waiting for Nginx to be ready..."
+kubectl wait --for=condition=available deployment/nginx --timeout=120s
 
 echo "Installation completed! Please restart your WSL session if this is the first time running this script."
